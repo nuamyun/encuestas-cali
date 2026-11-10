@@ -1,0 +1,48 @@
+services:
+  app:
+    build: .
+    container_name: encuestas_app
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-encuestas_cali}
+      DB_USER: ${DB_USER:-app}
+      DB_PASSWORD: ${DB_PASSWORD:-app_secret}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # En desarrollo, los cambios en el código se ven sin reconstruir la imagen
+      - ./src:/var/www/html/src
+      - ./public:/var/www/html/public
+      - ./config:/var/www/html/config
+
+  db:
+    image: mysql:8.4
+    container_name: encuestas_db
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_spanish_ci
+      - --default-time-zone=-05:00
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: ${DB_NAME:-encuestas_cali}
+      MYSQL_USER: ${DB_USER:-app}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-app_secret}
+    ports:
+      - "${DB_PORT_HOST:-3307}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Los .sql de esta carpeta se ejecutan solo la primera vez (volumen vacío)
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root_secret}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  db_data:

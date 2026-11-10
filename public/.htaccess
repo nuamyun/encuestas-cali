@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Archivos y carpetas reales (CSS, JS, imágenes) se sirven directamente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Todo lo demás pasa por el front controller
+RewriteRule ^ index.php [QSA,L]
