@@ -15,7 +15,7 @@ services:
         condition: service_healthy
     volumes:
       # En desarrollo, los cambios en el código se ven sin reconstruir la imagen
-      - ./src:/var/www/html/src
+      - ./app:/var/www/html/app
       - ./public:/var/www/html/public
       - ./config:/var/www/html/config
 

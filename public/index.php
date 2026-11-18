@@ -20,7 +20,7 @@ if (PHP_SAPI === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['REQUEST_U
 
 require __DIR__ . '/../vendor/autoload.php';
 
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set(App\Core\Config::file('app')['zona_horaria']);
 Session::start();
 
 $router = new Router();

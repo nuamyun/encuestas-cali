@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Validation\SolicitudValidator;
+use App\Models\Reglas\SolicitudValidator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,6 +27,7 @@ final class SolicitudValidatorTest extends TestCase
         return SolicitudValidator::validate($cambios + [
             'nombres'                 => 'Luz Mery',
             'apellidos'               => 'Ocampo',
+            'documento'               => '1.144.123.456',
             'celular'                 => '315 678 9012',
             'direccion'               => 'Calle 5 # 38-25',
             'comuna_corregimiento_id' => '2',
@@ -74,7 +75,7 @@ final class SolicitudValidatorTest extends TestCase
     {
         $r = SolicitudValidator::validate([], [self::class, 'pertenece']);
 
-        foreach (['nombres', 'apellidos', 'celular', 'direccion', 'comuna_corregimiento_id', 'barrio_id'] as $campo) {
+        foreach (['nombres', 'apellidos', 'documento', 'celular', 'direccion', 'comuna_corregimiento_id', 'barrio_id'] as $campo) {
             self::assertArrayHasKey($campo, $r['errores'], "Falta el error de {$campo}");
         }
     }
@@ -106,5 +107,66 @@ final class SolicitudValidatorTest extends TestCase
         $r = $this->validar(['latitud' => 'abc', 'longitud' => '-76.5']);
 
         self::assertArrayHasKey('ubicacion', $r['errores']);
+    }
+
+    public function testNormalizaElDocumentoSinPuntosNiEspacios(): void
+    {
+        self::assertSame('1144123456', $this->validar()['datos']['documento']);
+    }
+
+    public function testRechazaDocumentoConLetrasOMuyCorto(): void
+    {
+        self::assertArrayHasKey('documento', $this->validar(['documento' => 'AB12345'])['errores']);
+        self::assertArrayHasKey('documento', $this->validar(['documento' => '1234'])['errores']);
+    }
+
+    public function testPermiteLaSegundaSolicitudDeLaMismaPersona(): void
+    {
+        $r = SolicitudValidator::validate(
+            $this->entradaValida(),
+            [self::class, 'pertenece'],
+            static fn (string $documento): int => 1 // ya tiene 1 activa
+        );
+
+        self::assertArrayNotHasKey('documento', $r['errores']);
+    }
+
+    public function testRechazaLaTerceraSolicitudDeLaMismaPersona(): void
+    {
+        $consultado = null;
+        $r = SolicitudValidator::validate(
+            $this->entradaValida(),
+            [self::class, 'pertenece'],
+            static function (string $documento) use (&$consultado): int {
+                $consultado = $documento;
+
+                return SolicitudValidator::MAX_SOLICITUDES_POR_DOCUMENTO; // ya tiene 2 activas
+            }
+        );
+
+        self::assertArrayHasKey('documento', $r['errores']);
+        self::assertStringContainsString('máximo permitido es 2', $r['errores']['documento']);
+        self::assertSame('1144123456', $consultado, 'Debe contar por el documento ya normalizado');
+    }
+
+    public function testElLimiteEsDeDosSolicitudesActivas(): void
+    {
+        self::assertSame(2, SolicitudValidator::MAX_SOLICITUDES_POR_DOCUMENTO);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function entradaValida(): array
+    {
+        return [
+            'nombres'                 => 'Luz Mery',
+            'apellidos'               => 'Ocampo',
+            'documento'               => '1.144.123.456',
+            'celular'                 => '3156789012',
+            'direccion'               => 'Calle 5 # 38-25',
+            'comuna_corregimiento_id' => '2',
+            'barrio_id'               => '10',
+        ];
     }
 }

@@ -85,3 +85,9 @@ body {
         height: 320px;
     }
 }
+
+/* Tarjetas de estado de la bitácora: borde de color y resaltado del filtro activo */
+.app-estado-pendiente { border-left: 4px solid var(--bs-secondary) !important; }
+.app-estado-lista     { border-left: 4px solid var(--bs-success) !important; }
+.app-estado-rechazada { border-left: 4px solid var(--bs-danger) !important; }
+.app-card-activa      { outline: 2px solid var(--app-primary); }

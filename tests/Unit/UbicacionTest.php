@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Validation\Ubicacion;
+use App\Models\Reglas\Ubicacion;
 use PHPUnit\Framework\TestCase;
 
 /**
