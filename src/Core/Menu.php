@@ -15,10 +15,15 @@ final class Menu
         'administrador' => [
             ['titulo' => 'Usuarios', 'ruta' => '/usuarios', 'descripcion' => 'Crear usuarios y asignar perfiles.'],
         ],
-        'ventanilla'  => [],
+        'ventanilla'  => [
+            ['titulo' => 'Nueva solicitud', 'ruta' => '/solicitudes/nueva', 'descripcion' => 'Atender a un usuario y radicar su solicitud de encuesta.'],
+            ['titulo' => 'Solicitudes', 'ruta' => '/solicitudes', 'descripcion' => 'Ver las solicitudes del punto y georreferenciar las pendientes.'],
+        ],
         'encuestador' => [],
         'calidad'     => [],
-        'enrutador'   => [],
+        'enrutador'   => [
+            ['titulo' => 'Bitácora', 'ruta' => '/bitacora', 'descripcion' => 'Solicitudes generadas en el día en todos los puntos de atención.'],
+        ],
     ];
 
     /**

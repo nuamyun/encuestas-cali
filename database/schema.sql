@@ -5,6 +5,10 @@
 -- Las tablas de la entrega 2 (hojas de ruta) se agregan en el Sprint 2.
 -- =====================================================================
 
+-- Los archivos están en UTF-8: sin esta línea MySQL los lee como latin1
+-- y guarda mal las tildes ("Víctor" quedaría "VÃ­ctor").
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS encuestas_cali
   CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
 USE encuestas_cali;
