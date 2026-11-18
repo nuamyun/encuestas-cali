@@ -37,7 +37,6 @@ services:
       - db_data:/var/lib/mysql
       # Los .sql de esta carpeta se ejecutan solo la primera vez (volumen vacío)
       - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root_secret}"]
       interval: 5s
