@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\Auth;
 use App\Core\Database;
 use App\Core\View;
 
 final class HomeController
 {
     /**
-     * La raíz lleva al panel si hay sesión, o al login si no.
+     * Página inicial. En el paso 2 se reemplaza por el formulario de login.
      */
     public function index(): void
     {
-        redirect(Auth::check() ? '/inicio' : '/login');
+        View::render('home/index', [
+            'title'   => 'Inicio',
+            'dbOnline' => Database::isAvailable(),
+        ]);
     }
 
     /**

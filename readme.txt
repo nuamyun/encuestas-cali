@@ -17,16 +17,8 @@ EJECUCIÓN CON DOCKER
    Chequeo de salud:
        http://localhost:8080/health   -> {"status":"ok","db":true}
 
-La base de datos se crea automáticamente con database/schema.sql y
-database/seed.sql la primera vez que se levanta el contenedor de MySQL.
-
-USUARIOS DE PRUEBA (contraseña de todos: Cali2026*)
-- admin@encuestas.test          Administrador
-- ventanilla@encuestas.test     Ventanilla - Oficina principal (Comuna 17)
-- ventanilla.c1@encuestas.test  Ventanilla - Punto de atención Comuna 1
-- encuestador@encuestas.test    Encuestador
-- calidad@encuestas.test        Calidad
-- enrutador@encuestas.test      Enrutador
+La base de datos se crea automáticamente con database/schema.sql la
+primera vez que se levanta el contenedor de MySQL.
 
 Para borrar la base y recrearla desde cero:
        docker compose down -v
