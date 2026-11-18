@@ -26,7 +26,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "lint": "find src public config tests -name '*.php' -print0 | xargs -0 -n1 php -l"
+        "lint": "find src public config tests database/tools -name '*.php' -print0 | xargs -0 -n1 php -l"
     },
     "config": {
         "sort-packages": true

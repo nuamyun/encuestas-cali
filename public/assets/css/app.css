@@ -33,3 +33,55 @@ body {
     --bs-btn-hover-bg: var(--app-primary-dark);
     --bs-btn-hover-border-color: var(--app-primary-dark);
 }
+
+.app-guest {
+    background: linear-gradient(160deg, #e6f0f6 0%, var(--app-bg) 60%);
+}
+
+.app-logo {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--app-primary);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.app-badge-perfil {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-weight: 500;
+}
+
+.app-badge-perfil-claro {
+    background: #e3eff6;
+    color: var(--app-primary-dark);
+    font-weight: 500;
+}
+
+.app-card-link {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.app-card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app-mapa {
+    height: 420px;
+    border-radius: 8px;
+    z-index: 0;
+}
+
+@media (max-width: 576px) {
+    .app-mapa {
+        height: 320px;
+    }
+}

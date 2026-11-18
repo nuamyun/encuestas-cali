@@ -3,6 +3,7 @@
 -- Contraseña de todos: Cali2026*   (cambiarla en producción)
 -- El hash se generó con password_hash() de PHP (bcrypt).
 -- =====================================================================
+SET NAMES utf8mb4;
 USE encuestas_cali;
 
 SET @hash = '$2y$10$yM7h.BKuVGYsecQmO6IXrO2jLPo8OhTC1/HVbq6TnjbU28tK/kIrq';
