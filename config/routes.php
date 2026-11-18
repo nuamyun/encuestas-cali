@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\BitacoraController;
 use App\Controllers\CatalogoController;
+use App\Controllers\SistemaController;
 use App\Controllers\SolicitudController;
 use App\Controllers\HomeController;
 use App\Controllers\InicioController;
@@ -42,8 +43,10 @@ $router->get('/api/barrios', [CatalogoController::class, 'barrios'], ['ventanill
 
 // Enrutador: bitácora diaria (HU-05)
 $router->get('/bitacora', [BitacoraController::class, 'index'], ['enrutador']);
+$router->post('/bitacora/solicitudes/{id}/estado', [BitacoraController::class, 'cambiarEstado'], ['enrutador']);
 
 // Administrador (HU-01)
 $router->get('/usuarios', [UsuarioController::class, 'index'], ['administrador']);
 $router->get('/usuarios/nuevo', [UsuarioController::class, 'create'], ['administrador']);
 $router->post('/usuarios', [UsuarioController::class, 'store'], ['administrador']);
+$router->get('/sistema', [SistemaController::class, 'index'], ['administrador']);

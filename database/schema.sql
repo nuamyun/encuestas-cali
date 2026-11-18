@@ -115,11 +115,17 @@ CREATE TABLE usuarios (
 -- * latitud/longitud en NULL = "sin georreferenciar".
 -- * Rango de coordenadas: caja aproximada del municipio de Cali
 --   (zona urbana y rural); la aplicación usa los mismos límites.
+-- * documento identifica al solicitante; la aplicación limita las
+--   solicitudes activas por documento (ver SolicitudValidator).
+-- * estado: toda solicitud nace 'pendiente'; el enrutador la revisa en la
+--   bitácora y la marca 'lista' (puede ir a una hoja de ruta) o
+--   'rechazada' (con motivo obligatorio).
 -- ---------------------------------------------------------------------
 CREATE TABLE solicitudes (
   id                 INT UNSIGNED     NOT NULL AUTO_INCREMENT,
   nombres            VARCHAR(80)      NOT NULL,
   apellidos          VARCHAR(80)      NOT NULL,
+  documento          VARCHAR(15)      NOT NULL,  -- documento del solicitante
   celular            CHAR(10)         NOT NULL,
   direccion          VARCHAR(150)     NOT NULL,
   barrio_id          SMALLINT UNSIGNED NOT NULL,
@@ -129,7 +135,13 @@ CREATE TABLE solicitudes (
   usuario_id         INT UNSIGNED     NOT NULL,  -- ventanilla que radicó
   fecha_radicacion   DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fecha_limite       DATE AS (DATE(fecha_radicacion + INTERVAL 15 DAY)) STORED,
+  estado             ENUM('pendiente','lista','rechazada') NOT NULL DEFAULT 'pendiente',
+  motivo_rechazo     VARCHAR(255)     NULL,
+  revisado_por       INT UNSIGNED     NULL,      -- enrutador que cambió el estado
+  revisado_en        DATETIME         NULL,
   PRIMARY KEY (id),
+  KEY ix_solicitudes_documento (documento),
+  KEY ix_solicitudes_estado (estado),
   KEY ix_solicitudes_fecha (fecha_radicacion),
   KEY ix_solicitudes_punto (punto_atencion_id),
   KEY ix_solicitudes_barrio (barrio_id),
@@ -139,6 +151,10 @@ CREATE TABLE solicitudes (
     REFERENCES puntos_atencion (id),
   CONSTRAINT fk_solicitudes_usuario FOREIGN KEY (usuario_id)
     REFERENCES usuarios (id),
+  CONSTRAINT fk_solicitudes_revisor FOREIGN KEY (revisado_por)
+    REFERENCES usuarios (id),
+  CONSTRAINT ck_solicitudes_documento CHECK (documento REGEXP '^[0-9]{5,15}$'),
+  CONSTRAINT ck_solicitudes_motivo CHECK ((estado = 'rechazada') = (motivo_rechazo IS NOT NULL)),
   CONSTRAINT ck_solicitudes_celular CHECK (celular REGEXP '^3[0-9]{9}$'),
   CONSTRAINT ck_solicitudes_coords_par CHECK ((latitud IS NULL) = (longitud IS NULL)),
   CONSTRAINT ck_solicitudes_lat CHECK (latitud  IS NULL OR latitud  BETWEEN 3.28 AND 3.53),

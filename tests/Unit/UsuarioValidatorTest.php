@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Validation\UsuarioValidator;
+use App\Models\Reglas\UsuarioValidator;
 use PHPUnit\Framework\TestCase;
 
 /**
