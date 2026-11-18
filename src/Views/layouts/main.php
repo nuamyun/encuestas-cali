@@ -1,15 +1,9 @@
 <?php
 /** @var string $content */
 /** @var string|null $title */
-use App\Core\Auth;
-use App\Core\Csrf;
-use App\Core\Menu;
 use App\Core\Session;
 
-$flashes  = Session::pullFlash();
-$usuario  = Auth::user();
-$opciones = $usuario ? Menu::para($usuario['perfil']) : [];
-$actual   = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$flashes = Session::pullFlash();
 ?>
 <!doctype html>
 <html lang="es">
@@ -22,36 +16,9 @@ $actual   = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     <?= $head ?? '' ?>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+<nav class="navbar navbar-expand-lg app-navbar">
     <div class="container">
-        <a class="navbar-brand" href="/inicio">Encuestas Cali</a>
-        <?php if ($usuario): ?>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
-                    aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link<?= $actual === '/inicio' ? ' active' : '' ?>" href="/inicio">Inicio</a></li>
-                    <?php foreach ($opciones as $opcion): ?>
-                        <li class="nav-item">
-                            <a class="nav-link<?= str_starts_with((string) $actual, $opcion['ruta']) ? ' active' : '' ?>"
-                               href="<?= e($opcion['ruta']) ?>"><?= e($opcion['titulo']) ?></a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-                <div class="d-flex align-items-center gap-3">
-                    <span class="navbar-text small">
-                        <?= e($usuario['nombres']) ?>
-                        <span class="badge app-badge-perfil"><?= e($usuario['perfil']) ?></span>
-                    </span>
-                    <form method="post" action="/logout" class="m-0">
-                        <?= Csrf::field() ?>
-                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
-                    </form>
-                </div>
-            </div>
-        <?php endif; ?>
+        <a class="navbar-brand" href="/">Encuestas Cali</a>
     </div>
 </nav>
 
